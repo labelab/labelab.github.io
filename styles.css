@@ -70,6 +70,24 @@ header h1 {
     display: inline-block;
 }
 
+/* Add style for LinkedIn link */
+header .linkedin-link {
+    font-size: 14px;
+    color: var(--gray-600);
+    margin-top: 5px; /* Adjust spacing as needed */
+}
+
+header .linkedin-link a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+header .linkedin-link a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
 header h1:after {
     content: '';
     position: absolute;
@@ -93,6 +111,7 @@ header h1:after {
     flex-wrap: wrap;
     gap: 25px;
     justify-content: space-between;
+    align-items: center; /* Align items vertically */
     position: relative;
 }
 
@@ -112,6 +131,23 @@ header h1:after {
     align-items: center;
     flex-wrap: wrap;
     gap: 12px;
+}
+
+/* NEW: Style for export controls container */
+.export-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    background-color: var(--gray-100);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gray-200);
+}
+
+.export-controls label {
+    font-size: 14px;
+    color: var(--gray-700);
+    font-weight: 500;
 }
 
 .upload-btn {
@@ -159,7 +195,18 @@ input[type="text"], select {
     font-size: 14px;
     box-shadow: var(--shadow-sm);
     transition: border-color var(--transition-fast);
+    background-color: white; /* Ensure background for selects */
+    height: 40px; /* Match button height */
+    line-height: 1.5; /* Improve select text alignment */
 }
+
+
+/* Specific style for the export format select */
+#export-format-select {
+    padding: 8px 12px; /* Slightly smaller padding */
+    height: auto; /* Let height be determined by content */
+}
+
 
 input[type="text"]:focus, select:focus {
     outline: none;
@@ -180,8 +227,11 @@ button {
     box-shadow: var(--shadow-sm);
     display: inline-flex;
     align-items: center;
+    justify-content: center; /* Center content */
     gap: 6px;
+    height: 40px; /* Standard height */
 }
+
 
 button:hover {
     background-color: var(--primary-dark);
@@ -212,7 +262,8 @@ button:disabled {
     font-size: 12px;
 }
 
-#export-btn:before {
+/* NEW: Icon for the specific export button */
+#export-selected-btn:before {
     content: '💾';
     font-size: 14px;
 }
@@ -234,7 +285,7 @@ button:disabled {
     border-radius: var(--radius-sm);
     max-height: 200px;
     overflow-y: auto;
-    width: 100%;
+    width: 100%; /* Take full width in its flex container */
     border: 1px solid var(--gray-200);
     box-shadow: inset var(--shadow-sm);
 }
@@ -262,6 +313,7 @@ button:disabled {
 #class-list li {
     display: flex;
     justify-content: space-between;
+    align-items: center; /* Align items vertically */
     padding: 6px 10px;
     background-color: white;
     border-radius: var(--radius-sm);
@@ -271,6 +323,7 @@ button:disabled {
     box-shadow: var(--shadow-sm);
     min-width: 100px;
 }
+
 
 #class-list li:hover {
     border-color: var(--primary-light);
@@ -285,6 +338,7 @@ button:disabled {
     border-radius: 50%;
     margin-right: 6px;
     border: 1px solid rgba(0, 0, 0, 0.1);
+    vertical-align: middle; /* Align color swatch */
 }
 
 .delete-class {
@@ -298,6 +352,7 @@ button:disabled {
     height: 20px;
     border-radius: 50%;
     transition: all var(--transition-fast);
+    margin-left: 8px; /* Add space */
 }
 
 .delete-class:hover {
@@ -309,7 +364,7 @@ button:disabled {
 .main-content {
     display: flex;
     gap: 25px;
-    height: calc(100vh - 220px);
+    height: calc(100vh - 230px); /* Adjusted height slightly */
     min-height: 520px;
 }
 
@@ -412,7 +467,21 @@ h3 {
 
 .control-group {
     margin-bottom: 12px;
+    display: flex; /* Align label and select */
+    align-items: center;
+    gap: 8px;
 }
+
+.control-group label {
+    font-size: 14px;
+    color: var(--gray-700);
+    font-weight: 500;
+}
+
+.control-group select {
+    flex-grow: 1; /* Allow select to take available space */
+}
+
 
 #annotations-list {
     list-style-type: none;
@@ -431,10 +500,12 @@ h3 {
     cursor: pointer;
     display: flex;
     justify-content: space-between;
+    align-items: center; /* Vertically align content */
     border: 1px solid var(--gray-300);
     transition: all var(--transition-fast);
     box-shadow: var(--shadow-sm);
 }
+
 
 #annotations-list li:hover {
     border-color: var(--primary-light);
@@ -456,6 +527,7 @@ h3 {
     border-radius: 50%;
     margin-right: 6px;
     border: 1px solid rgba(0, 0, 0, 0.1);
+    vertical-align: middle; /* Align vertically */
 }
 
 #annotations-list li .annotation-info {
@@ -463,6 +535,7 @@ h3 {
     align-items: center;
     gap: 8px;
     flex-grow: 1;
+    margin-right: 10px; /* Add space before size */
 }
 
 #annotations-list li .annotation-class-selector {
@@ -485,11 +558,11 @@ h3 {
     font-size: 13px;
     color: var(--gray-600);
     white-space: nowrap;
-    margin-left: 10px;
     background-color: var(--gray-100);
     padding: 2px 8px;
     border-radius: 12px;
     border: 1px solid var(--gray-200);
+    flex-shrink: 0; /* Prevent size from shrinking */
 }
 
 #annotations-list li.selected .annotation-size {
@@ -547,12 +620,18 @@ h3 {
 @media (max-width: 768px) {
     .toolbar {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch; /* Stretch items */
     }
 
     .upload-section, .class-section, .tools-section {
         width: 100%;
+        justify-content: space-between; /* Space out items */
     }
+
+     .tools-section .export-controls {
+        flex-grow: 1; /* Allow export controls to take more space */
+        justify-content: flex-end; /* Align select/button right */
+     }
 }
 
 /* Dark mode support */
@@ -582,8 +661,13 @@ h3 {
         background-color: var(--gray-200);
     }
 
-    .current-image-info, .annotation-controls, .annotations-list, .class-list-container {
+    .current-image-info, .annotation-controls, .annotations-list, .class-list-container, .export-controls {
         background-color: var(--gray-100);
+        border-color: var(--gray-300);
+    }
+
+     .export-controls label, .control-group label {
+        color: var(--gray-700);
     }
 
     #image-container {
@@ -601,6 +685,20 @@ h3 {
 
     input[type="text"]:focus, select:focus {
         box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.25);
+        border-color: var(--primary-light);
+    }
+
+    /* Dark mode adjustments for LinkedIn link */
+    header .linkedin-link {
+        color: var(--gray-600);
+    }
+
+    header .linkedin-link a {
+        color: var(--primary);
+    }
+
+     header .linkedin-link a:hover {
+        color: var(--primary-light); /* Lighter hover in dark mode */
     }
 
     #annotations-list li.selected {
@@ -610,10 +708,29 @@ h3 {
     #annotations-list li .annotation-size {
         background-color: var(--gray-300);
         color: var(--gray-700);
+        border-color: var(--gray-400);
     }
 
     #upload-count {
         background-color: var(--gray-300);
         color: var(--gray-700);
+        border-color: var(--gray-400);
+    }
+
+    button:disabled {
+        background-color: var(--gray-400);
+        color: var(--gray-600);
+    }
+
+     ::-webkit-scrollbar-track {
+        background: var(--gray-200);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--gray-500);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--gray-600);
     }
 }

@@ -6,7 +6,7 @@ const addClassBtn = document.getElementById('add-class-btn');
 const classList = document.getElementById('class-list');
 const prevImageBtn = document.getElementById('prev-image-btn');
 const nextImageBtn = document.getElementById('next-image-btn');
-const exportBtn = document.getElementById('export-btn');
+// const exportBtn = document.getElementById('export-btn'); // Old button removed reference
 const resetBtn = document.getElementById('reset-btn');
 const imageCanvas = document.getElementById('image-canvas');
 const noImageMessage = document.getElementById('no-image-message');
@@ -16,6 +16,8 @@ const totalImages = document.getElementById('total-images');
 const currentClassSelect = document.getElementById('current-class');
 const deleteSelectedBtn = document.getElementById('delete-selected-btn');
 const annotationsList = document.getElementById('annotations-list');
+const exportFormatSelect = document.getElementById('export-format-select'); // New select element
+const exportSelectedBtn = document.getElementById('export-selected-btn'); // New export button
 
 // Canvas context
 const ctx = imageCanvas.getContext('2d');
@@ -57,20 +59,19 @@ function init() {
     });
     prevImageBtn.addEventListener('click', showPreviousImage);
     nextImageBtn.addEventListener('click', showNextImage);
-    exportBtn.addEventListener('click', exportLabelsZip); // Use the new ZIP export function
+    // exportBtn.addEventListener('click', exportAllFormatsZip); // Old listener removed
+    exportSelectedBtn.addEventListener('click', handleExport); // New listener for the specific export button
     resetBtn.addEventListener('click', resetApp);
     deleteSelectedBtn.addEventListener('click', deleteSelectedAnnotation);
     currentClassSelect.addEventListener('change', (e) => {
         state.currentClass = e.target.value;
-        // If an annotation is selected, offer to change its class (optional feature)
-        // changeSelectedAnnotationClass(state.currentClass);
     });
 
     // Canvas event listeners
     imageCanvas.addEventListener('mousedown', handleMouseDown);
     imageCanvas.addEventListener('mousemove', handleMouseMove);
     imageCanvas.addEventListener('mouseup', handleMouseUp);
-    imageCanvas.addEventListener('mouseleave', handleMouseLeave); // Use a separate handler
+    imageCanvas.addEventListener('mouseleave', handleMouseLeave);
 
     // Keyboard shortcuts
     document.addEventListener('keydown', handleKeyDown);
@@ -182,7 +183,7 @@ function showCurrentImage() {
     imageName.textContent = currentImage.name;
     imageIndex.textContent = state.currentImageIndex + 1;
 
-    // Scaling and centering logic (same as before)
+    // Scaling and centering logic
     const container = document.querySelector('.canvas-container');
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
@@ -230,7 +231,7 @@ function redrawCanvas() {
 // --- Class Handling ---
 
 function addClass() {
-    const className = classInput.value.trim().toLowerCase(); // Standardize to lowercase
+    const className = classInput.value.trim().toLowerCase();
     if (className && !state.classes.includes(className)) {
         addClassWithName(className);
         classInput.value = '';
@@ -291,10 +292,10 @@ function updateClassList() {
         `;
         classList.appendChild(li);
         li.querySelector('.delete-class').addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent li click
+            e.stopPropagation();
             removeClass(e.target.getAttribute('data-class'));
         });
-         li.addEventListener('click', () => { // Select class on click
+         li.addEventListener('click', () => {
              state.currentClass = className;
              currentClassSelect.value = className;
          });
@@ -317,7 +318,6 @@ function updateClassSelect() {
             option.textContent = className;
             currentClassSelect.appendChild(option);
         });
-        // Try to restore previous selection or default to first
         if (state.classes.includes(previousValue)) {
             currentClassSelect.value = previousValue;
             state.currentClass = previousValue;
@@ -358,45 +358,36 @@ function drawBoundingBox(x, y, width, height, className, isSelected) {
     const strokeColor = isSelected ? color : color;
     const strokeWidth = isSelected ? 3 : 2;
 
-    // Create a slightly transparent fill for all boxes
     const fillAlpha = isSelected ? 0.25 : 0.1;
     const fillColor = `${color}${Math.floor(fillAlpha * 255).toString(16).padStart(2, '0')}`;
 
-    // Draw semi-transparent fill
     ctx.fillStyle = fillColor;
     ctx.fillRect(x, y, width, height);
 
-    // Draw rounded rectangle border - looks more modern
     drawRoundedRect(x, y, width, height, strokeColor, strokeWidth);
 
-    // Draw label with better styling
     const text = className;
     ctx.font = 'bold 12px Arial';
     const textMetrics = ctx.measureText(text);
     const textWidth = textMetrics.width;
-    const textHeight = 18; // Increased for better readability
+    const textHeight = 18;
     const padding = 6;
     const labelX = x;
     const labelY = y > textHeight + padding ? y - textHeight - padding : y + height + padding;
 
-    // Draw label background with rounded corners
     ctx.fillStyle = color;
     drawRoundedRect(labelX, labelY, textWidth + padding * 2, textHeight, color, 0, true);
 
-    // Draw label text
     ctx.fillStyle = '#fff';
     ctx.fillText(text, labelX + padding, labelY + textHeight - padding/2);
 
     if (isSelected) {
-        // Draw resize handles at corners
         drawSelectionHandles(x, y, width, height);
     }
 }
 
-
-// Helper function to draw a rounded rectangle
 function drawRoundedRect(x, y, width, height, color, lineWidth = 2, fill = false) {
-    const radius = 3; // Corner radius
+    const radius = 3;
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
     ctx.lineTo(x + width - radius, y);
@@ -418,27 +409,23 @@ function drawRoundedRect(x, y, width, height, color, lineWidth = 2, fill = false
     }
 }
 
-// Draw selection handles at corners of selected box
 function drawSelectionHandles(x, y, width, height) {
     const handleSize = 8;
     const halfHandle = handleSize / 2;
     const handleColor = "#ffffff";
     const borderColor = "#000000";
 
-    // Corner positions
     const corners = [
-        {x: x, y: y},                           // Top-left
-        {x: x + width, y: y},                   // Top-right
-        {x: x + width, y: y + height},          // Bottom-right
-        {x: x, y: y + height}                   // Bottom-left
+        {x: x, y: y},
+        {x: x + width, y: y},
+        {x: x + width, y: y + height},
+        {x: x, y: y + height}
     ];
 
     corners.forEach(corner => {
-        // White fill with black border
         ctx.fillStyle = handleColor;
         ctx.strokeStyle = borderColor;
         ctx.lineWidth = 1;
-
         ctx.beginPath();
         ctx.rect(corner.x - halfHandle, corner.y - halfHandle, handleSize, handleSize);
         ctx.fill();
@@ -455,7 +442,6 @@ function handleMouseDown(e) {
     const currentImageName = state.images[state.currentImageIndex].name;
     const annotations = state.annotations[currentImageName] || [];
 
-    // Check if clicking on an existing annotation
     let clickedAnnotationIndex = -1;
     for (let i = annotations.length - 1; i >= 0; i--) {
         const [ax, ay, aw, ah] = annotations[i].rect;
@@ -472,18 +458,15 @@ function handleMouseDown(e) {
     }
 
     if (clickedAnnotationIndex !== -1) {
-        // Clicked on existing annotation
         state.selectedAnnotationIndex = clickedAnnotationIndex;
         state.isDragging = true;
-        state.isDrawing = false; // Prevent drawing new box
+        state.isDrawing = false;
         const selectedRect = annotations[clickedAnnotationIndex].rect;
-        // Calculate offset from top-left corner for smooth dragging
         state.dragOffsetX = mouseX - (selectedRect[0] * state.canvasScale);
         state.dragOffsetY = mouseY - (selectedRect[1] * state.canvasScale);
         deleteSelectedBtn.disabled = false;
         imageCanvas.style.cursor = 'move';
     } else {
-        // Start drawing a new annotation if a class is selected
         if (!state.currentClass) {
              alert("Please select a class before drawing.");
              return;
@@ -492,12 +475,12 @@ function handleMouseDown(e) {
         state.isDragging = false;
         state.startX = mouseX;
         state.startY = mouseY;
-        state.selectedAnnotationIndex = -1; // Deselect any previous
+        state.selectedAnnotationIndex = -1;
         deleteSelectedBtn.disabled = true;
         imageCanvas.style.cursor = 'crosshair';
     }
 
-    redrawCanvas(); // Redraw to show selection/prepare for drawing
+    redrawCanvas();
     updateAnnotationsList();
 }
 
@@ -505,48 +488,42 @@ function handleMouseMove(e) {
     const { x: mouseX, y: mouseY } = getMousePos(imageCanvas, e);
 
     if (state.isDragging && state.selectedAnnotationIndex !== -1) {
-        // Move the selected annotation
         const currentImageName = state.images[state.currentImageIndex].name;
         const annotation = state.annotations[currentImageName][state.selectedAnnotationIndex];
         let newX = (mouseX - state.dragOffsetX) / state.canvasScale;
         let newY = (mouseY - state.dragOffsetY) / state.canvasScale;
 
-        // Optional: Keep box within image boundaries
         newX = Math.max(0, Math.min(newX, state.imageSize.width - annotation.rect[2]));
         newY = Math.max(0, Math.min(newY, state.imageSize.height - annotation.rect[3]));
 
         annotation.rect[0] = newX;
         annotation.rect[1] = newY;
-        redrawCanvas(); // Redraw continuously while dragging
+        redrawCanvas();
     } else if (state.isDrawing) {
-        // Draw the temporary rectangle for a new annotation
-        redrawCanvas(); // Redraw base image + existing annotations
+        redrawCanvas();
         const width = mouseX - state.startX;
         const height = mouseY - state.startY;
-        ctx.strokeStyle = getClassColor(state.currentClass) || '#0000ff'; // Color of current class
+        ctx.strokeStyle = getClassColor(state.currentClass) || '#0000ff';
         ctx.lineWidth = 2;
         ctx.strokeRect(state.startX, state.startY, width, height);
     } else {
-         // Update cursor if hovering over an existing box (when not dragging/drawing)
          updateCursorStyle(mouseX, mouseY);
     }
 }
 
 function handleMouseUp(e) {
     if (state.isDrawing) {
-        // Finish drawing a new annotation
         const { x: mouseX, y: mouseY } = getMousePos(imageCanvas, e);
         const width = mouseX - state.startX;
         const height = mouseY - state.startY;
 
-        if (Math.abs(width) > 5 && Math.abs(height) > 5) { // Minimum size check
+        if (Math.abs(width) > 5 && Math.abs(height) > 5) {
             const currentImageName = state.images[state.currentImageIndex].name;
             const x = Math.min(state.startX, mouseX) / state.canvasScale;
             const y = Math.min(state.startY, mouseY) / state.canvasScale;
             const w = Math.abs(width) / state.canvasScale;
             const h = Math.abs(height) / state.canvasScale;
 
-            // Clamp coordinates to image boundaries
             const clampedX = Math.max(0, x);
             const clampedY = Math.max(0, y);
             const clampedW = Math.min(w, state.imageSize.width - clampedX);
@@ -564,25 +541,23 @@ function handleMouseUp(e) {
         }
     }
 
-    // Reset states
     state.isDrawing = false;
     state.isDragging = false;
-    imageCanvas.style.cursor = 'default'; // Reset cursor
-    redrawCanvas(); // Final redraw
+    imageCanvas.style.cursor = 'default';
+    redrawCanvas();
     updateAnnotationsList();
 }
 
 function handleMouseLeave(e) {
-    // If drawing or dragging was in progress, cancel it or finalize it
     if (state.isDrawing || state.isDragging) {
-        handleMouseUp(e); // Treat leaving the canvas like releasing the mouse
+        handleMouseUp(e);
     }
      imageCanvas.style.cursor = 'default';
 }
 
 
 function updateCursorStyle(mouseX, mouseY) {
-     if (state.currentImageIndex === -1 || state.isDragging || state.isDrawing) return; // Don't change if busy
+     if (state.currentImageIndex === -1 || state.isDragging || state.isDrawing) return;
 
      const currentImageName = state.images[state.currentImageIndex].name;
      const annotations = state.annotations[currentImageName] || [];
@@ -603,9 +578,9 @@ function updateCursorStyle(mouseX, mouseY) {
      }
 
      if (hoveringOverBox) {
-         imageCanvas.style.cursor = 'move'; // Indicate movability
+         imageCanvas.style.cursor = 'move';
      } else {
-         imageCanvas.style.cursor = state.currentClass ? 'crosshair' : 'default'; // Crosshair if class selected
+         imageCanvas.style.cursor = state.currentClass ? 'crosshair' : 'default';
      }
 }
 
@@ -644,28 +619,24 @@ function updateAnnotationsList() {
             <span class="annotation-size">${Math.round(annotation.rect[2])}×${Math.round(annotation.rect[3])}</span>
         `;
 
-        // Click on list item selects the annotation
         li.addEventListener('click', (e) => {
-             // Don't select if click was on the dropdown
              if (e.target.tagName !== 'SELECT') {
                  state.selectedAnnotationIndex = index;
                  deleteSelectedBtn.disabled = false;
                  redrawCanvas();
-                 updateAnnotationsList(); // Re-render list to show selection
+                 updateAnnotationsList();
              }
         });
 
-        // Change class using the dropdown
         const selector = li.querySelector('.annotation-class-selector');
         selector.addEventListener('change', (e) => {
              const newClass = e.target.value;
              const annotationIndex = parseInt(e.target.getAttribute('data-index'));
              state.annotations[currentImage.name][annotationIndex].class = newClass;
-             state.selectedAnnotationIndex = annotationIndex; // Keep it selected
+             state.selectedAnnotationIndex = annotationIndex;
              redrawCanvas();
-             updateAnnotationsList(); // Update list appearance
+             updateAnnotationsList();
         });
-         // Prevent clicks on select box from bubbling up to the li's click handler
          selector.addEventListener('click', (e) => e.stopPropagation());
 
 
@@ -689,103 +660,483 @@ function deleteSelectedAnnotation() {
 // --- Keyboard Shortcuts ---
 
 function handleKeyDown(e) {
-    // Use e.key for modern browsers
     switch (e.key) {
         case 'ArrowLeft':
-            e.preventDefault(); // Prevent browser back navigation if input isn't focused
+            e.preventDefault();
             showPreviousImage();
             break;
         case 'ArrowRight':
-            e.preventDefault(); // Prevent browser forward navigation
+            e.preventDefault();
             showNextImage();
             break;
         case 'Delete':
         case 'Backspace':
              if (state.selectedAnnotationIndex !== -1 && !deleteSelectedBtn.disabled) {
-                 e.preventDefault(); // Prevent browser back navigation
+                 e.preventDefault();
                  deleteSelectedAnnotation();
              }
             break;
-         // Add more shortcuts (e.g., number keys to select class) if needed
     }
 }
 
 
 // --- Export ---
 
-// Uses JSZip to export all annotations into a single zip file
-async function exportLabelsZip() {
+// Helper to escape XML characters
+function escapeXml(unsafe) {
+    if (typeof unsafe !== 'string') return unsafe;
+    return unsafe.replace(/[<>&'"]/g, function (c) {
+        switch (c) {
+            case '<': return '&lt;';
+            case '>': return '&gt;';
+            case '&': return '&amp;';
+            case '\'': return '&apos;';
+            case '"': return '&quot;';
+        }
+    });
+}
+
+
+// Generate Pascal VOC XML content for a single image
+function generatePascalVOC(imageObj, annotations, classes) {
+    const imageName = imageObj.name;
+    const imageWidth = imageObj.width;
+    const imageHeight = imageObj.height;
+
+    let xmlContent = `<annotation>
+    <folder>images</folder>
+    <filename>${escapeXml(imageName)}</filename>
+    <path>${escapeXml(imageName)}</path>
+    <source>
+        <database>Unknown</database>
+    </source>
+    <size>
+        <width>${imageWidth}</width>
+        <height>${imageHeight}</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>\n`;
+
+    annotations.forEach(annotation => {
+        const className = annotation.class;
+        if (!annotation.rect || annotation.rect.length < 4 || annotation.rect[2] <= 0 || annotation.rect[3] <= 0) {
+            console.warn(`[Pascal VOC] Skipping invalid annotation for ${imageName}:`, annotation);
+            return;
+         }
+        const [x, y, width, height] = annotation.rect;
+        const xmin = Math.max(0, Math.round(x));
+        const ymin = Math.max(0, Math.round(y));
+        const xmax = Math.min(imageWidth, Math.round(x + width));
+        const ymax = Math.min(imageHeight, Math.round(y + height));
+
+         if (xmax <= xmin || ymax <= ymin) {
+            console.warn(`[Pascal VOC] Skipping annotation with non-positive dimensions after rounding/clamping for ${imageName}:`, annotation);
+            return;
+         }
+
+        xmlContent += `    <object>
+        <name>${escapeXml(className)}</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>${xmin}</xmin>
+            <ymin>${ymin}</ymin>
+            <xmax>${xmax}</xmax>
+            <ymax>${ymax}</ymax>
+        </bndbox>
+    </object>\n`;
+    });
+
+    xmlContent += `</annotation>`;
+    return xmlContent;
+}
+
+// Generate COCO JSON content for all images
+function generateCOCOJSON(images, allAnnotations, classes) {
+    const cocoData = {
+        info: {
+            description: "COCO Dataset generated by LabeLab",
+            url: "",
+            version: "1.0",
+            year: new Date().getFullYear(),
+            contributor: "LabeLab User",
+            date_created: new Date().toISOString()
+        },
+        licenses: [{ url: "", id: 1, name: "Default License" }],
+        images: [],
+        annotations: [],
+        categories: []
+    };
+
+    classes.forEach((className, index) => {
+        cocoData.categories.push({
+            supercategory: "none",
+            id: index + 1,
+            name: className
+        });
+    });
+
+    let annotationId = 1;
+    images.forEach((imageObj, imageIndex) => {
+        const imageId = imageIndex + 1;
+        const imageName = imageObj.name;
+        const imageWidth = imageObj.width;
+        const imageHeight = imageObj.height;
+
+        cocoData.images.push({
+            license: 1,
+            file_name: imageName,
+            coco_url: "",
+            height: imageHeight,
+            width: imageWidth,
+            date_captured: "",
+            flickr_url: "",
+            id: imageId
+        });
+
+        const annotationsForImage = allAnnotations[imageName] || [];
+        annotationsForImage.forEach(annotation => {
+            const classIndex = classes.indexOf(annotation.class);
+            if (classIndex === -1) return;
+
+            if (!annotation.rect || annotation.rect.length < 4 || annotation.rect[2] <= 0 || annotation.rect[3] <= 0) {
+                console.warn(`[COCO JSON] Skipping invalid annotation for ${imageName}:`, annotation);
+                return;
+             }
+
+            const [x, y, width, height] = annotation.rect;
+            const categoryId = classIndex + 1;
+
+             if (width <= 0 || height <= 0) {
+                 console.warn(`[COCO JSON] Skipping annotation with non-positive dimensions for ${imageName}:`, annotation);
+                 return;
+             }
+
+            cocoData.annotations.push({
+                segmentation: [],
+                area: width * height,
+                iscrowd: 0,
+                image_id: imageId,
+                bbox: [x, y, width, height],
+                category_id: categoryId,
+                id: annotationId++
+            });
+        });
+    });
+
+    return JSON.stringify(cocoData, null, 2);
+}
+
+// Generate LabelMe JSON content for a single image
+function generateLabelMeJSON(imageObj, annotations, classes) {
+    const imageName = imageObj.name;
+    const imageWidth = imageObj.width;
+    const imageHeight = imageObj.height;
+
+    const labelMeData = {
+        version: "5.0.1",
+        flags: {},
+        shapes: [],
+        imagePath: imageName,
+        imageData: null,
+        imageHeight: imageHeight,
+        imageWidth: imageWidth
+    };
+
+    annotations.forEach(annotation => {
+        const className = annotation.class;
+        if (!annotation.rect || annotation.rect.length < 4 || annotation.rect[2] <= 0 || annotation.rect[3] <= 0) {
+            console.warn(`[LabelMe JSON] Skipping invalid annotation for ${imageName}:`, annotation);
+            return;
+         }
+
+        const [x, y, width, height] = annotation.rect;
+        const x1 = x;
+        const y1 = y;
+        const x2 = x + width;
+        const y2 = y + height;
+
+         if (x2 <= x1 || y2 <= y1) {
+            console.warn(`[LabelMe JSON] Skipping annotation with non-positive dimensions for ${imageName}:`, annotation);
+            return;
+         }
+
+        labelMeData.shapes.push({
+            label: className,
+            points: [ [x1, y1], [x2, y2] ],
+            group_id: null,
+            shape_type: "rectangle",
+            flags: {}
+        });
+    });
+
+    return JSON.stringify(labelMeData, null, 2);
+}
+
+// --- NEW: Export Dispatcher ---
+function handleExport() {
+    const selectedFormat = exportFormatSelect.value;
+
     if (state.images.length === 0) {
         alert("No images to export annotations for.");
         return;
     }
     if (state.classes.length === 0) {
-         alert("Please define classes before exporting.");
-         return;
+        alert("Please define classes before exporting.");
+        return;
     }
-
-    // Check if JSZip is loaded
-    if (typeof JSZip === 'undefined') {
+     if (typeof JSZip === 'undefined') {
          alert("Error: JSZip library not loaded. Cannot export as ZIP.");
          console.error("JSZip library not found. Make sure it's included in your HTML.");
          return;
-    }
+     }
 
+    switch(selectedFormat) {
+        case 'yolo':
+            exportYOLOZip();
+            break;
+        case 'voc':
+            exportPascalVOCZip();
+            break;
+        case 'coco':
+            exportCOCOZip();
+            break;
+        case 'labelme':
+            exportLabelMeZip();
+            break;
+        case 'all':
+            exportAllFormatsZip();
+            break;
+        default:
+            alert("Invalid export format selected.");
+    }
+}
+
+// --- NEW: Format-Specific ZIP Export Functions ---
+
+async function exportYOLOZip() {
     const zip = new JSZip();
     let annotationsGenerated = false;
 
-    // Add annotation files
     state.images.forEach(imageObj => {
         const imageName = imageObj.name;
+        const baseName = imageName.replace(/\.[^/.]+$/, "");
         const annotations = state.annotations[imageName];
-        if (!annotations || annotations.length === 0) return; // Skip images with no annotations
+        if (!annotations || annotations.length === 0) return;
 
         let yoloContent = '';
         annotations.forEach(annotation => {
             const classIndex = state.classes.indexOf(annotation.class);
-            if (classIndex === -1) return; // Should not happen if removeClass logic is correct
-
-             // Skip annotations with invalid dimensions right away
-             if (!annotation.rect || annotation.rect.length < 4 || annotation.rect[2] <= 0 || annotation.rect[3] <= 0) {
-                console.warn(`Skipping invalid annotation for ${imageName}:`, annotation);
-                return;
-             }
+            if (classIndex === -1) return;
+            if (!annotation.rect || annotation.rect.length < 4 || annotation.rect[2] <= 0 || annotation.rect[3] <= 0) return;
 
             const [x, y, width, height] = annotation.rect;
             const centerX = (x + width / 2) / imageObj.width;
             const centerY = (y + height / 2) / imageObj.height;
             const normWidth = width / imageObj.width;
             const normHeight = height / imageObj.height;
-
-            // Clamp values just in case
             const clamp = (val) => Math.max(0, Math.min(1, val));
             yoloContent += `${classIndex} ${clamp(centerX).toFixed(6)} ${clamp(centerY).toFixed(6)} ${clamp(normWidth).toFixed(6)} ${clamp(normHeight).toFixed(6)}\n`;
         });
 
         if (yoloContent) {
-             const txtFileName = imageName.replace(/\.[^/.]+$/, "") + ".txt";
-             zip.file(txtFileName, yoloContent);
+             zip.file(baseName + ".txt", yoloContent);
              annotationsGenerated = true;
         }
     });
 
     if (!annotationsGenerated) {
-        alert("No annotations found to export.");
+        alert("No valid YOLO annotations found to export.");
         return;
     }
 
-    // Add classes.txt file
     const classesContent = state.classes.join('\n');
     zip.file("classes.txt", classesContent);
 
-    // Generate and download the zip file
     try {
         const zipBlob = await zip.generateAsync({ type: "blob" });
         downloadBlob(zipBlob, "yolo_annotations.zip");
-        alert('Annotations successfully exported as yolo_annotations.zip!');
+        alert('YOLO annotations successfully exported!');
     } catch (error) {
-        console.error("Error generating ZIP file:", error);
-        alert("Failed to generate ZIP file. Check console for details.");
+        console.error("Error generating YOLO ZIP file:", error);
+        alert("Failed to generate YOLO ZIP file.");
+    }
+}
+
+async function exportPascalVOCZip() {
+    const zip = new JSZip();
+    let annotationsGenerated = false;
+
+    state.images.forEach(imageObj => {
+        const imageName = imageObj.name;
+        const baseName = imageName.replace(/\.[^/.]+$/, "");
+        const annotations = state.annotations[imageName];
+        if (!annotations || annotations.length === 0) return;
+
+        const vocContent = generatePascalVOC(imageObj, annotations, state.classes);
+        if (vocContent.includes('<object>')) {
+             zip.file(baseName + ".xml", vocContent);
+             annotationsGenerated = true;
+        }
+    });
+
+     if (!annotationsGenerated) {
+        alert("No valid Pascal VOC annotations found to export.");
+        return;
+    }
+
+    // Optionally include classes.txt for reference
+    // const classesContent = state.classes.join('\n');
+    // zip.file("classes.txt", classesContent);
+
+    try {
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, "pascal_voc_annotations.zip");
+        alert('Pascal VOC annotations successfully exported!');
+    } catch (error) {
+        console.error("Error generating Pascal VOC ZIP file:", error);
+        alert("Failed to generate Pascal VOC ZIP file.");
+    }
+}
+
+async function exportCOCOZip() {
+    const zip = new JSZip();
+    let annotationsGenerated = false;
+
+    const cocoContent = generateCOCOJSON(state.images, state.annotations, state.classes);
+    if (cocoContent && JSON.parse(cocoContent).annotations.length > 0) {
+        zip.file("annotations.json", cocoContent);
+        annotationsGenerated = true;
+    }
+
+    if (!annotationsGenerated) {
+        alert("No valid COCO annotations found to export.");
+        return;
+    }
+
+     // Optionally include classes.txt for reference
+     const classesContent = state.classes.join('\n');
+     zip.file("classes.txt", classesContent);
+
+    try {
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, "coco_annotations.zip");
+        alert('COCO JSON annotations successfully exported!');
+    } catch (error) {
+        console.error("Error generating COCO ZIP file:", error);
+        alert("Failed to generate COCO ZIP file.");
+    }
+}
+
+async function exportLabelMeZip() {
+    const zip = new JSZip();
+    let annotationsGenerated = false;
+
+    state.images.forEach(imageObj => {
+        const imageName = imageObj.name;
+        const baseName = imageName.replace(/\.[^/.]+$/, "");
+        const annotations = state.annotations[imageName];
+        if (!annotations || annotations.length === 0) return;
+
+        const labelmeContent = generateLabelMeJSON(imageObj, annotations, state.classes);
+        if (labelmeContent && JSON.parse(labelmeContent).shapes.length > 0) {
+             zip.file(baseName + ".json", labelmeContent);
+             annotationsGenerated = true;
+        }
+    });
+
+     if (!annotationsGenerated) {
+        alert("No valid LabelMe annotations found to export.");
+        return;
+    }
+
+    // Optionally include classes.txt for reference
+    // const classesContent = state.classes.join('\n');
+    // zip.file("classes.txt", classesContent);
+
+    try {
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, "labelme_annotations.zip");
+        alert('LabelMe JSON annotations successfully exported!');
+    } catch (error) {
+        console.error("Error generating LabelMe ZIP file:", error);
+        alert("Failed to generate LabelMe ZIP file.");
+    }
+}
+
+
+// --- Combined Export (Remains the same logic as before, just called explicitly) ---
+async function exportAllFormatsZip() {
+    const zip = new JSZip();
+    const yoloFolder = zip.folder("yolo");
+    const vocFolder = zip.folder("pascal_voc");
+    const labelmeFolder = zip.folder("labelme");
+    const cocoFolder = zip.folder("coco"); // Added COCO folder
+    let annotationsGenerated = false;
+
+    state.images.forEach(imageObj => {
+        const imageName = imageObj.name;
+        const baseName = imageName.replace(/\.[^/.]+$/, "");
+        const annotations = state.annotations[imageName];
+        if (!annotations || annotations.length === 0) return;
+
+        // YOLO
+        let yoloContent = '';
+        annotations.forEach(annotation => {
+            const classIndex = state.classes.indexOf(annotation.class);
+            if (classIndex === -1) return;
+            if (!annotation.rect || annotation.rect.length < 4 || annotation.rect[2] <= 0 || annotation.rect[3] <= 0) return;
+            const [x, y, width, height] = annotation.rect;
+            const centerX = (x + width / 2) / imageObj.width;
+            const centerY = (y + height / 2) / imageObj.height;
+            const normWidth = width / imageObj.width;
+            const normHeight = height / imageObj.height;
+            const clamp = (val) => Math.max(0, Math.min(1, val));
+            yoloContent += `${classIndex} ${clamp(centerX).toFixed(6)} ${clamp(centerY).toFixed(6)} ${clamp(normWidth).toFixed(6)} ${clamp(normHeight).toFixed(6)}\n`;
+        });
+        if (yoloContent) {
+            yoloFolder.file(baseName + ".txt", yoloContent);
+            annotationsGenerated = true;
+        }
+
+        // Pascal VOC
+        const vocContent = generatePascalVOC(imageObj, annotations, state.classes);
+        if (vocContent.includes('<object>')) {
+             vocFolder.file(baseName + ".xml", vocContent);
+             annotationsGenerated = true;
+        }
+
+        // LabelMe
+        const labelmeContent = generateLabelMeJSON(imageObj, annotations, state.classes);
+        if (labelmeContent && JSON.parse(labelmeContent).shapes.length > 0) {
+             labelmeFolder.file(baseName + ".json", labelmeContent);
+             annotationsGenerated = true;
+        }
+    });
+
+    // COCO (Single File)
+    const cocoContent = generateCOCOJSON(state.images, state.annotations, state.classes);
+     if (cocoContent && JSON.parse(cocoContent).annotations.length > 0) {
+        cocoFolder.file("annotations.json", cocoContent); // Place in its own folder
+        annotationsGenerated = true;
+    }
+
+    if (!annotationsGenerated) {
+        alert("No valid annotations found to export for any format.");
+        return;
+    }
+
+    const classesContent = state.classes.join('\n');
+    zip.file("classes.txt", classesContent);
+
+    try {
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, "annotations_all_formats.zip");
+        alert('All annotation formats successfully exported!');
+    } catch (error) {
+        console.error("Error generating combined ZIP file:", error);
+        alert("Failed to generate combined ZIP file.");
     }
 }
 
@@ -798,7 +1149,7 @@ function downloadBlob(blob, filename) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    URL.revokeObjectURL(url); // Free up memory
+    URL.revokeObjectURL(url);
 }
 
 // --- Utility Functions ---
@@ -806,7 +1157,8 @@ function downloadBlob(blob, filename) {
 function updateNavigationButtons() {
     prevImageBtn.disabled = state.currentImageIndex <= 0;
     nextImageBtn.disabled = state.currentImageIndex >= state.images.length - 1 || state.images.length === 0;
-    exportBtn.disabled = state.images.length === 0; // Enable export if images are loaded
+    // Update the new export button's state
+    exportSelectedBtn.disabled = state.images.length === 0; // Enable export if images are loaded
 }
 
 function updateUploadCount() {
@@ -820,10 +1172,9 @@ function resetApp() {
             return;
         }
     }
-    // Reset state completely
     state.images = [];
     state.currentImageIndex = -1;
-    // state.classes = []; // Keep classes or reset? Let's keep them for now.
+    // state.classes = []; // Keep classes
     state.annotations = {};
     state.selectedAnnotationIndex = -1;
     state.isDrawing = false;
@@ -831,7 +1182,7 @@ function resetApp() {
 
     resetAppVisuals();
     updateNavigationButtons();
-    // updateClassList(); // Update in case classes were reset
+    // updateClassList();
     // updateClassSelect();
 }
 
@@ -856,12 +1207,6 @@ function getMousePos(canvas, evt) {
         y: evt.clientY - rect.top
     };
 }
-
-// Convert canvas coordinates to original image coordinates
-// function canvasToImageCoords(x, y) { ... } // Not currently used but keep if needed
-
-// Convert original image coordinates to canvas coordinates
-// function imageToCanvasCoords(x, y) { ... } // Not currently used but keep if needed
 
 // --- Start the application ---
 document.addEventListener('DOMContentLoaded', init);

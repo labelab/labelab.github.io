@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Image Labeling Tool</title>
+    <title>LabeLab - Image Labeling Tool</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏷️</text></svg>">
 </head>
 <body>
     <div class="app-container">
         <header>
-            <h1>Modern Image Labeling Tool</h1>
+            <h1>LabeLab</h1>
             <p class="subtitle">Easily annotate images for machine learning projects</p>
+            <p class="linkedin-link">Created by: <a href="https://il.linkedin.com/in/yehuda-heller" target="_blank" rel="noopener noreferrer">Yehuda Heller</a></p>
         </header>
 
         <div class="toolbar">
@@ -35,7 +36,17 @@
             <div class="tools-section">
                 <button id="prev-image-btn" disabled>Previous</button>
                 <button id="next-image-btn" disabled>Next</button>
-                <button id="export-btn" disabled>Export Labels</button>
+                <div class="export-controls">
+                     <label for="export-format-select">Export Format:</label>
+                     <select id="export-format-select">
+                         <option value="yolo">YOLO (txt)</option>
+                         <option value="voc">Pascal VOC (xml)</option>
+                         <option value="coco">COCO (json)</option>
+                         <option value="labelme">LabelMe (json)</option>
+                         <option value="all">All Formats</option>
+                     </select>
+                     <button id="export-selected-btn" disabled>Export</button>
+                </div>
                 <button id="reset-btn">Reset All</button>
             </div>
         </div>
@@ -72,6 +83,7 @@
         </div>
     </div>
 
+    {/* Ensure JSZip library is included */}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="annotator.js"></script>
 </body>
