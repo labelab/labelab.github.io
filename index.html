@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Image Labeling Tool</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏷️</text></svg>">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Modern Image Labeling Tool</h1>
+            <p class="subtitle">Easily annotate images for machine learning projects</p>
+        </header>
+
+        <div class="toolbar">
+            <div class="upload-section">
+                <label for="image-upload" class="upload-btn">
+                    Upload Images
+                    <input type="file" id="image-upload" accept="image/*" multiple>
+                </label>
+                <span id="upload-count">No images uploaded</span>
+            </div>
+
+            <div class="class-section">
+                <input type="text" id="class-input" placeholder="Add new class...">
+                <button id="add-class-btn">Add Class</button>
+                <div class="class-list-container">
+                    <h3>Classes</h3>
+                    <ul id="class-list"></ul>
+                </div>
+            </div>
+
+            <div class="tools-section">
+                <button id="prev-image-btn" disabled>Previous</button>
+                <button id="next-image-btn" disabled>Next</button>
+                <button id="export-btn" disabled>Export Labels</button>
+                <button id="reset-btn">Reset All</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="canvas-container">
+                <div id="image-container">
+                    <canvas id="image-canvas"></canvas>
+                    <div id="no-image-message">Upload images to start labeling</div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="current-image-info">
+                    <h3>Current Image</h3>
+                    <p id="image-name">None</p>
+                    <p class="image-counter"><span id="image-index">0</span>/<span id="total-images">0</span></p>
+                </div>
+
+                <div class="annotation-controls">
+                    <h3>Labeling Controls</h3>
+                    <div class="control-group">
+                        <label for="current-class">Select Class:</label>
+                        <select id="current-class"></select>
+                    </div>
+                    <button id="delete-selected-btn" disabled>Delete Selected Box</button>
+                </div>
+
+                <div class="annotations-list">
+                    <h3>Current Annotations</h3>
+                    <ul id="annotations-list"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="annotator.js"></script>
+</body>
+</html>
