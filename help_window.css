@@ -1,0 +1,403 @@
+/* for help window */
+/* Help System Styling */
+
+/* Help Button */
+.help-btn {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--premium-gradient);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+  z-index: 1000;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+}
+
+.help-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4);
+}
+
+.help-btn:before {
+  content: "?";
+  font-family: 'Inter', sans-serif;
+}
+
+/* Help Modal */
+.help-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.help-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.help-content {
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+  position: relative;
+  animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(222, 226, 230, 0.7);
+}
+
+@keyframes modalSlideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.help-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 2;
+}
+
+.help-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--gray-800);
+  display: flex;
+  align-items: center;
+}
+
+.help-header h2:before {
+  content: "💡";
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.help-close {
+  background: none;
+  border: none;
+  color: var(--gray-600);
+  font-size: 22px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.help-close:hover {
+  background-color: var(--gray-100);
+  color: var(--gray-800);
+  transform: none;
+  box-shadow: none;
+}
+
+.help-body {
+  padding: 24px;
+}
+
+.help-section {
+  margin-bottom: 24px;
+}
+
+.help-section:last-child {
+  margin-bottom: 0;
+}
+
+.help-section h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gray-800);
+  display: flex;
+  align-items: center;
+}
+
+.help-section p {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--gray-700);
+}
+
+.help-section ul {
+  margin: 0 0 12px 0;
+  padding-left: 24px;
+}
+
+.help-section li {
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--gray-700);
+}
+
+.help-section code {
+  background-color: var(--gray-100);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--primary-dark);
+}
+
+.help-shortcut {
+  display: inline-block;
+  background-color: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--gray-700);
+  margin: 0 2px;
+}
+
+.help-tip {
+  background-color: var(--premium-accent-subtle);
+  border-left: 3px solid var(--premium-accent);
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-radius: 0 6px 6px 0;
+}
+
+.help-tip strong {
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+.help-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--gray-200);
+  text-align: center;
+  color: var(--gray-600);
+  font-size: 13px;
+}
+
+.help-tabs {
+  display: flex;
+  overflow-x: auto;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--gray-200);
+  padding-bottom: 10px;
+  gap: 10px;
+}
+
+.help-tab {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-600);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.help-tab:hover {
+  color: var(--primary);
+  background-color: var(--gray-100);
+  transform: none;
+  box-shadow: none;
+}
+
+.help-tab.active {
+  background-color: var(--premium-accent-subtle);
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.help-tab-content {
+  display: none;
+}
+
+.help-tab-content.active {
+  display: block;
+}
+
+/* Context-sensitive help indicators */
+.help-indicator {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: var(--gray-200);
+  color: var(--gray-600);
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 6px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.help-indicator:hover {
+  background-color: var(--primary-light);
+  color: white;
+}
+
+/* Tooltip system for quick help */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  background-color: var(--gray-800);
+  color: white;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 12px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  width: max-content;
+  max-width: 250px;
+  font-size: 12px;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+.tooltip .tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--gray-800) transparent transparent transparent;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Dark mode adjustments for help system */
+@media (prefers-color-scheme: dark) {
+  .help-content {
+    background-color: var(--premium-dark);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .help-header {
+    background-color: var(--premium-dark);
+    border-bottom: 1px solid var(--gray-700);
+  }
+
+  .help-header h2 {
+    color: var(--gray-300);
+  }
+
+  .help-close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--gray-300);
+  }
+
+  .help-section h3 {
+    color: var(--gray-300);
+  }
+
+  .help-section p, .help-section li {
+    color: var(--gray-400);
+  }
+
+  .help-section code {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--primary-light);
+  }
+
+  .help-shortcut {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--gray-700);
+    color: var(--gray-400);
+  }
+
+  .help-tip {
+    background-color: rgba(96, 165, 250, 0.1);
+    border-left: 3px solid var(--premium-accent);
+  }
+
+  .help-footer {
+    border-top: 1px solid var(--gray-700);
+    color: var(--gray-500);
+  }
+
+  .help-tabs {
+    border-bottom: 1px solid var(--gray-700);
+  }
+
+  .help-tab:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .help-tab.active {
+    background-color: rgba(96, 165, 250, 0.15);
+    color: var(--premium-accent);
+  }
+
+  .help-indicator {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--gray-400);
+  }
+
+  .tooltip .tooltip-text {
+    background-color: var(--gray-700);
+  }
+
+  .tooltip .tooltip-text::after {
+    border-color: var(--gray-700) transparent transparent transparent;
+  }
+}
+
+/* Animation for showing tooltips */
+@keyframes tooltipFadeIn {
+  from { opacity: 0; transform: translateY(10px) translateX(-50%); }
+  to { opacity: 1; transform: translateY(0) translateX(-50%); }
+}
+
+.tooltip:hover .tooltip-text {
+  animation: tooltipFadeIn 0.3s ease forwards;
+}

@@ -734,3 +734,515 @@ h3 {
         background: var(--gray-600);
     }
 }
+
+/* Styling for the Snap toggle button */
+#toggle-snap-btn {
+    background-color: var(--gray-500); /* Default: OFF state */
+    min-width: 120px; /* Give it some width */
+}
+
+#toggle-snap-btn.active {
+    background-color: var(--success); /* Active: ON state */
+    color: white;
+}
+
+#toggle-snap-btn:hover {
+     opacity: 0.9;
+}
+
+/* Adjust layout in annotation controls if needed */
+.annotation-controls .control-group {
+    flex-wrap: wrap; /* Allow wrapping if buttons take too much space */
+}
+
+/* Dark mode adjustments for snap button */
+@media (prefers-color-scheme: dark) {
+    #toggle-snap-btn {
+        background-color: var(--gray-600);
+        color: var(--gray-200);
+    }
+
+    #toggle-snap-btn.active {
+        background-color: var(--success); /* Keep success color for ON state */
+        color: white;
+    }
+}
+/* NEW: Tool Selection Styles */
+.tool-selection {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background-color: var(--gray-100); /* Match export controls background */
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gray-200);
+}
+
+.tool-selection span {
+    font-size: 14px;
+    color: var(--gray-700);
+    font-weight: 500;
+    margin-right: 4px;
+}
+
+.tool-btn {
+    background-color: var(--gray-300);
+    color: var(--gray-700);
+    padding: 6px 12px; /* Smaller padding */
+    font-size: 18px; /* Larger icon/text */
+    line-height: 1;
+    height: auto; /* Adjust height */
+    min-width: 40px;
+    box-shadow: none;
+    border: 2px solid transparent;
+}
+
+.tool-btn:hover {
+    background-color: var(--gray-400);
+    transform: none; /* No hover transform */
+    box-shadow: none;
+}
+
+.tool-btn.active {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary-dark);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Dark mode adjustments for tool selection */
+@media (prefers-color-scheme: dark) {
+    .tool-selection {
+        background-color: var(--gray-300); /* Darker background */
+        border-color: var(--gray-400);
+    }
+    .tool-selection span {
+        color: var(--gray-800);
+    }
+    .tool-btn {
+        background-color: var(--gray-500);
+        color: var(--gray-200);
+    }
+    .tool-btn:hover {
+        background-color: var(--gray-600);
+    }
+    .tool-btn.active {
+        background-color: var(--primary);
+        border-color: var(--primary-light);
+    }
+}
+
+/* Ensure toolbar layout adapts */
+.toolbar {
+    gap: 15px; /* Adjust gap if needed */
+}
+
+/* Premium AI Tool Enhancement - Elegant Minimalist Design */
+
+:root {
+  /* Updated luxury color palette */
+  --premium-dark: #1a1a2e;
+  --premium-accent: #4361ee;
+  --premium-accent-subtle: rgba(67, 97, 238, 0.15);
+  --premium-light: #f8f9fd;
+  --premium-gold: #c9b037;
+  --premium-silver: #d1d1e0;
+  --premium-gradient: linear-gradient(135deg, #4361ee, #3a0ca3);
+  --premium-glow: 0 0 15px rgba(67, 97, 238, 0.3);
+}
+
+/* Enhanced App Container */
+.app-container {
+  max-width: 1500px;
+  padding: 24px;
+}
+
+/* Luxury Header Updates */
+header h1 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: var(--premium-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 10px rgba(67, 97, 238, 0.2);
+}
+
+header h1:after {
+  background: var(--premium-gradient);
+  height: 3px;
+  width: 60px;
+  bottom: -8px;
+}
+
+header .subtitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+  color: var(--gray-600);
+  font-size: 15px;
+}
+
+/* Refined Toolbar */
+.toolbar {
+  border-radius: 12px;
+  background-color: var(--gray-100);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.toolbar:before {
+  background: var(--premium-gradient);
+  height: 3px;
+}
+
+/* Consistent Luxury Icon System */
+.icon-btn {
+  font-family: 'Material Symbols Rounded', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+}
+
+/* New unified button styling */
+button {
+  background: var(--primary);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(67, 97, 238, 0.2);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Updated button icons with consistent iconography */
+.upload-btn:before {
+  content: '↑';
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#add-class-btn:before {
+  content: '+';
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#prev-image-btn:before {
+  content: '←';
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#next-image-btn:after {
+  content: '→';
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#export-selected-btn:before {
+  content: '↓';
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#reset-btn:before {
+  content: '↺ ';
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#delete-selected-btn:before {
+  content: '✕';
+  font-size: 14px;
+  font-weight: bold;
+}
+
+#toggle-snap-btn:before {
+  content: '⋈';
+  font-size: 14px;
+  margin-right: 4px;
+}
+
+/* Fix for the Next button icon visibility */
+#next-image-btn:after {
+  content: '→';
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 4px;
+  display: inline-block;
+}
+
+/* Enhanced tool selection buttons */
+.tool-btn {
+  background-color: transparent;
+  color: var(--gray-600);
+  border: 1px solid var(--gray-300);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 16px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tool-btn:hover {
+  background-color: var(--gray-200);
+  color: var(--gray-800);
+}
+
+.tool-btn.active {
+  background-color: var(--premium-accent);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 0 12px rgba(67, 97, 238, 0.3);
+}
+
+/* Rectangle tool icon */
+#select-tool-rect {
+  font-family: sans-serif;
+}
+
+/* Polygon tool icon */
+#select-tool-poly {
+  font-family: sans-serif;
+}
+
+/* Luxury canvas container */
+.canvas-container {
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07);
+  border: 1px solid rgba(222, 226, 230, 0.7);
+  transition: box-shadow 0.3s ease;
+}
+
+.canvas-container:hover {
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* Premium image container background */
+#image-container {
+  background-image:
+    linear-gradient(45deg, rgba(240, 240, 245, 0.5) 25%, transparent 25%, transparent 75%, rgba(240, 240, 245, 0.5) 75%, rgba(240, 240, 245, 0.5)),
+    linear-gradient(45deg, rgba(240, 240, 245, 0.5) 25%, transparent 25%, transparent 75%, rgba(240, 240, 245, 0.5) 75%, rgba(240, 240, 245, 0.5));
+  background-position: 0 0, 15px 15px;
+  background-size: 30px 30px;
+}
+
+/* Luxury sidebar */
+.sidebar {
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07);
+  border: 1px solid rgba(222, 226, 230, 0.7);
+  padding: 24px;
+}
+
+/* Refined section headers */
+.sidebar h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--gray-700);
+  margin-bottom: 16px;
+}
+
+/* Premium section styling */
+.current-image-info, .annotation-controls, .annotations-list, .class-list-container {
+  border-radius: 10px;
+  border: 1px solid rgba(222, 226, 230, 0.5);
+  padding: 18px;
+}
+
+/* Luxury annotation list items */
+#annotations-list li {
+  border-radius: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(222, 226, 230, 0.7);
+}
+
+#annotations-list li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+}
+
+#annotations-list li.selected {
+  background: var(--premium-gradient);
+  border-color: transparent;
+  box-shadow: 0 6px 12px rgba(67, 97, 238, 0.2);
+}
+
+/* Enhanced class list items */
+#class-list li {
+  border-radius: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(222, 226, 230, 0.7);
+  padding: 8px 12px;
+}
+
+#class-list li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Icon consistency in headers */
+.current-image-info h3:before {
+  content: '◨';
+  font-size: 16px;
+}
+
+.annotation-controls h3:before {
+  content: '⚙';
+  font-size: 16px;
+}
+
+.annotations-list h3:before {
+  content: '≡';
+  font-size: 16px;
+}
+
+.class-list-container h3:before {
+  content: '◉';
+  font-size: 16px;
+}
+
+/* Enhanced form elements */
+input[type="text"], select {
+  border-radius: 8px;
+  border: 1px solid rgba(222, 226, 230, 0.7);
+  padding: 12px 16px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+input[type="text"]:focus, select:focus {
+  border-color: var(--premium-accent);
+  box-shadow: 0 0 0 3px var(--premium-accent-subtle);
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --premium-dark: #121827;
+    --premium-light: #1f2937;
+    --premium-accent: #60a5fa;
+    --premium-accent-subtle: rgba(96, 165, 250, 0.15);
+    --premium-gradient: linear-gradient(135deg, #60a5fa, #3b82f6);
+    --premium-glow: 0 0 15px rgba(96, 165, 250, 0.3);
+  }
+
+  .toolbar, .sidebar, .canvas-container {
+    background-color: var(--premium-dark);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  #image-container {
+    background-image:
+      linear-gradient(45deg, rgba(40, 40, 50, 0.5) 25%, transparent 25%, transparent 75%, rgba(40, 40, 50, 0.5) 75%, rgba(40, 40, 50, 0.5)),
+      linear-gradient(45deg, rgba(40, 40, 50, 0.5) 25%, transparent 25%, transparent 75%, rgba(40, 40, 50, 0.5) 75%, rgba(40, 40, 50, 0.5));
+  }
+
+  .current-image-info, .annotation-controls, .annotations-list, .class-list-container {
+    background-color: rgba(30, 30, 40, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  #annotations-list li, #class-list li {
+    background-color: var(--premium-dark);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  header .subtitle {
+    color: var(--gray-400);
+  }
+
+  input[type="text"], select {
+    background-color: var(--premium-dark);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--gray-300);
+  }
+
+  input[type="text"]:focus, select:focus {
+    border-color: var(--premium-accent);
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+  }
+
+  .tool-btn {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--gray-400);
+  }
+
+  .tool-btn:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--gray-300);
+  }
+
+  .tool-btn.active {
+    background-color: var(--premium-accent);
+    color: white;
+    border-color: transparent;
+  }
+}
+
+/* Subtle hover effects */
+button, .tool-btn, #annotations-list li, #class-list li, input, select {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Add subtle animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(67, 97, 238, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+}
+
+/* Apply subtle loading animation to the container */
+.app-container {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Add loading animation to elements */
+.toolbar, .canvas-container, .sidebar {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+.toolbar {
+  animation-delay: 0.1s;
+}
+
+.canvas-container {
+  animation-delay: 0.2s;
+}
+
+.sidebar {
+  animation-delay: 0.3s;
+}
+
+/* Override any font settings to use Inter */
+body, button, input, select, h1, h2, h3, h4, p, span, div {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+

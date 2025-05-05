@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LabeLab - Image Labeling Tool</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="help_window.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏷️</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 </head>
 <body>
     <div class="app-container">
@@ -22,6 +27,12 @@
                     <input type="file" id="image-upload" accept="image/*" multiple>
                 </label>
                 <span id="upload-count">No images uploaded</span>
+            </div>
+
+             <div class="tool-selection">
+                <span>Tool:</span>
+                <button id="select-tool-rect" class="tool-btn active" title="Draw Rectangles">⿻</button>
+                <button id="select-tool-poly" class="tool-btn" title="Draw Polygons"> ⭔ ⬠</button>
             </div>
 
             <div class="class-section">
@@ -72,8 +83,12 @@
                         <label for="current-class">Select Class:</label>
                         <select id="current-class"></select>
                     </div>
-                    <button id="delete-selected-btn" disabled>Delete Selected Box</button>
+                    <div class="control-group">
+                       <button id="toggle-snap-btn">🧲 Snap: OFF</button>
+                    </div>
+                    <button id="delete-selected-btn" disabled>Delete Selected Annotation</button>
                 </div>
+
 
                 <div class="annotations-list">
                     <h3>Current Annotations</h3>
@@ -83,8 +98,9 @@
         </div>
     </div>
 
-    {/* Ensure JSZip library is included */}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="annotator.js"></script>
+<script src="help_window.js"></script>
+
 </body>
 </html>
